@@ -3,8 +3,12 @@
 import asyncio
 from datetime import datetime
 from hashlib import sha256
+from pathlib import Path
+
+import ormantic as orm
 
 from .model import UploadedPicture
+from .settings import Settings
 from .site import INTERGRATED_BEDS
 from .site.abc import ImageBedSessionABC
 from .util import ReadableImageFile
@@ -42,11 +46,22 @@ class ImageUploader:
         content = await fileobj.read()
         hex256: str = sha256(content).hexdigest()
         access, delete = await task_upload
-
-        sqlitem = UploadedPicture(
-            hash="sha256:{}".format(hex256),
-            bed=self.bedname,
-            access=access,
-            delete=delete,
-            uptime=datetime.now(),
-        )
+        key = "sha256:{}".format(hex256)
+        try:
+            exists: UploadedPicture = await UploadedPicture.objects.get(
+                hash=key)
+            print("重复的 {hash!r} @ {filename!r}, 最初上传时间 {uptime}.".format(
+                **exists.dict()))
+        except orm.NoMatch:
+            success: UploadedPicture = await UploadedPicture.objects.create(
+                hash=key,
+                bed=self.bedname,
+                filename=fileobj.filename,
+                accesser=access,
+                deleter=delete,
+                uptime=datetime.now(),
+            )
+            Path(Path(Settings.BLOB_DIR) / hex256).write_bytes(await
+                                                               fileobj.read())
+            print("成功创建条目 ({bed!r}) {hash!r} @ {filename!r} {uptime}.".format(
+                **success.dict()))
