@@ -23,7 +23,7 @@ class ImageUploader:
 
     >>> iu = ImageUploader() # 默认采用 sm.ms 图床
     >>> imgpath = "./example.png"
-    >>> await = iu.upload(imgpath)
+    >>> await iu.upload(imgpath)
     """
     bed: ImageBedSessionABC
 

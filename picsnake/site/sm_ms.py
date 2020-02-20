@@ -100,4 +100,4 @@ class ISession(ImageBedSessionABC):
         return "{}{}".format(self.URL_PREFIX, name)
 
     async def delete(self, key: str) -> bool:
-        return super().delete(key)
+        return await super().delete(key)
