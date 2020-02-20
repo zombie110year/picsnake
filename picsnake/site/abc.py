@@ -1,5 +1,10 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
+from abc import abstractmethod
 from typing import Tuple
+
+from ..abc import ReadableImageFileABC
+
+__all__ = ("ImageBedSessionABC", )
 
 
 class ImageBedSessionABC(metaclass=ABCMeta):
@@ -9,7 +14,7 @@ class ImageBedSessionABC(metaclass=ABCMeta):
     - delete
     """
     @abstractmethod
-    async def upload(self, filepath: str) -> Tuple[str, str]:
+    async def upload(self, fileobj: ReadableImageFileABC) -> Tuple[str, str]:
         "上传，并返回（访问链接，删除链接）"
         raise NotImplementedError
 

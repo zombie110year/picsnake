@@ -12,6 +12,7 @@ from aiohttp import ClientSession
 from aiohttp import CookieJar
 from aiohttp import FormData
 
+from ..abc import ReadableImageFileABC
 from .abc import ImageBedSessionABC
 
 __all__ = ("ISession", )
@@ -63,7 +64,7 @@ class ISession(ImageBedSessionABC):
                     print("Disk rest: {:.3f}%, {} / {}".format(
                         dur / dlr, du, dl))
 
-    async def upload(self, filepath: str) -> Tuple[str, str]:
+    async def upload(self, fileobj: ReadableImageFileABC) -> Tuple[str, str]:
         """返回（访问链接，删除链接）
 
         sm.ms 图床的上传功能需要向 ``/upload`` POST 一个含字段 ``smfile`` 的 FormData.
@@ -80,21 +81,19 @@ class ISession(ImageBedSessionABC):
 
         async with ClientSession(headers=self._headers,
                                  cookies=self._cookies) as cs:
-            async with aiofiles.open(filepath, "rb") as source:
-                form = FormData()
-                filename = PurePath(filepath).name
-                mimetype = guess_type(filepath)[0]  # 返回的是 (type, encoding)
-                form.add_field(
-                    "smfile",
-                    value=(await source.read()),
-                    content_type=mimetype,
-                    filename=filename,
-                )
-                async with cs.post(self._api("/upload"),
-                                   data=form) as response:
-                    if response.status == 200:
-                        rawdata = await response.read()
-                        return_data = json.loads(rawdata)
+            form = FormData()
+            filename = fileobj.filename
+            mimetype = guess_type(filename)[0]  # 返回的是 (type, encoding)
+            form.add_field(
+                "smfile",
+                value=(await fileobj.read()),
+                content_type=mimetype,
+                filename=filename,
+            )
+            async with cs.post(self._api("/upload"), data=form) as response:
+                if response.status == 200:
+                    rawdata = await response.read()
+                    return_data = json.loads(rawdata)
         return return_data["data"]["url"], return_data["data"]["delete"]
 
     def _api(self, name: str) -> str:
