@@ -4,11 +4,13 @@ import databases
 import ormantic as orm
 import sqlalchemy
 
+from .settings import Settings
+
 __all__ = ("UploadedPicture", )
 
 SHA256_LENGTH = 64
-# TODO 读取配置
-DATABASE = databases.Database("sqlite:///db.sqlite")
+
+DATABASE = databases.Database("sqlite:///{}".format(Settings.DATABASE))
 METADATA = sqlalchemy.MetaData()
 
 Sha256Hex: orm.String = orm.String(primary_key=True,

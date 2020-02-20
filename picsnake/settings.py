@@ -4,14 +4,7 @@ from platform import system
 
 from . import __app_name__
 
-
-class Settings:
-    """应用程序的“静态”设置，动态设置通过 yaml 读取
-    """
-    CONF_DIR: str = {
-        "Windows": windows_appdata,
-        "Linux": linux_config
-    }.get(system(), default=unknown_system)()
+__all__ = ("Settings", )
 
 
 def windows_appdata() -> str:
@@ -35,3 +28,21 @@ def linux_config() -> str:
 def unknown_system():
     """既不是 Windows 也不是 Linux"""
     raise RuntimeError("无法在此系统上运行，你的系统是 {}".format(repr(system())))
+
+
+class Settings:
+    """应用程序的“静态”设置，动态设置通过 yaml 读取
+    """
+    CONF_DIR: str = {
+        "Windows": windows_appdata,
+        "Linux": linux_config
+    }.get(system(), unknown_system)()
+    PLUGIN_DIR: str = "{}/plugins".format(CONF_DIR)
+
+    DATABASE: str = "{}/db.sqlite".format(CONF_DIR)
+
+    # ensure_path
+    if not Path(CONF_DIR).exists():
+        Path(CONF_DIR).mkdir(parents=True)
+    if not Path(PLUGIN_DIR).exists():
+        Path(PLUGIN_DIR).mkdir(parents=True)
