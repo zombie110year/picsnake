@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "picsnake"
+version = "0.1.0"
+description = ""
+authors = ["zombie110year <zombie110year@outlook.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+aiohttp = "^3.6.2"
+ormantic = "^0.0.29"
+aiosqlite = "^0.11.0"
+databases = "^0.2.6"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+mypy = "^0.761"
+yapf = "^0.29.0"
+
+[[tool.poetry.source]]
+name = "aliyun"
+url = "https://mirrors.aliyun.com/pypi/simple"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

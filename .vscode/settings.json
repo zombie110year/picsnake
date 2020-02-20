@@ -1,0 +1,19 @@
+{
+    "restructuredtext.confPath": "",
+    "python.pythonPath": "${workspaceFolder}/.venv/Scripts/python",
+    "python.sortImports.args": [
+        "-sl"
+    ],
+    "python.formatting.yapfPath": "${workspaceFolder}/.venv/Scripts/yapf",
+    "python.autoComplete.addBrackets": true,
+    "python.autoComplete.showAdvancedMembers": false,
+    "python.autoComplete.typeshedPaths": [],
+    "python.linting.mypyPath": "${workspaceFolder}/.venv/Scripts/mypy",
+    "python.linting.mypyEnabled": true,
+    "python.linting.mypyArgs": [
+        "--ignore-missing-imports",
+        "--follow-imports=silent",
+        "--show-column-numbers"
+    ],
+    "python.linting.enabled": true
+}
