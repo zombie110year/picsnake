@@ -15,6 +15,7 @@ databases = "^0.2.6"
 pytest = "^5.2"
 mypy = "^0.761"
 yapf = "^0.29.0"
+ipython = "^7.12.0"
 
 [[tool.poetry.source]]
 name = "aliyun"

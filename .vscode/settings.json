@@ -15,5 +15,6 @@
         "--follow-imports=silent",
         "--show-column-numbers"
     ],
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "python.formatting.provider": "yapf"
 }
