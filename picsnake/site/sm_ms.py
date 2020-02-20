@@ -6,15 +6,18 @@ from datetime import datetime
 from mimetypes import guess_type
 from pathlib import PurePath
 from typing import Tuple
+
 import aiofiles
 from aiohttp import ClientSession
 from aiohttp import CookieJar
 from aiohttp import FormData
 
+from .abc import ImageBedSessionABC
+
 __all__ = ("ISession", )
 
 
-class ISession:
+class ISession(ImageBedSessionABC):
     """https://doc.sm.ms/
     """
     URL_PREFIX = "https://sm.ms/api/v2/"
@@ -36,7 +39,7 @@ class ISession:
         """
         async with ClientSession(headers=self._headers,
                                  cookies=self._cookies) as cs:
-            async with cs.post(self.api("/token"),
+            async with cs.post(self._api("/token"),
                                json={
                                    "username": username,
                                    "password": password
@@ -47,7 +50,7 @@ class ISession:
                     self.headers[self.AUTH_KEYNAME] = self.token
                     print("[{now}] login: sm.ms - {username}".format(
                         now=datetime.now(), username=username))
-            async with cs.post(self.api("/profile"),
+            async with cs.post(self._api("/profile"),
                                json={self.AUTH_KEYNAME:
                                      self.token}) as response:
                 if response.status == 200:
@@ -87,11 +90,12 @@ class ISession:
                     content_type=mimetype,
                     filename=filename,
                 )
-                async with cs.post(self.api("/upload"), data=form) as response:
+                async with cs.post(self._api("/upload"),
+                                   data=form) as response:
                     if response.status == 200:
                         rawdata = await response.read()
                         return_data = json.loads(rawdata)
         return return_data["data"]["url"], return_data["data"]["delete"]
 
-    def api(self, name: str) -> str:
+    def _api(self, name: str) -> str:
         return "{}{}".format(self.URL_PREFIX, name)
