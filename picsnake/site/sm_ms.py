@@ -99,3 +99,6 @@ class ISession(ImageBedSessionABC):
 
     def _api(self, name: str) -> str:
         return "{}{}".format(self.URL_PREFIX, name)
+
+    async def delete(self, key: str) -> bool:
+        return super().delete(key)
