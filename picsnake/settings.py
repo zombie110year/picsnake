@@ -38,11 +38,11 @@ class Settings:
         "Linux": linux_config
     }.get(system(), unknown_system)()
     PLUGIN_DIR: str = "{}/plugins".format(CONF_DIR)
+    BLOB_DIR: str = "{}/bolbs".format(CONF_DIR)
 
     DATABASE: str = "{}/db.sqlite".format(CONF_DIR)
 
     # ensure_path
-    if not Path(CONF_DIR).exists():
-        Path(CONF_DIR).mkdir(parents=True)
-    if not Path(PLUGIN_DIR).exists():
-        Path(PLUGIN_DIR).mkdir(parents=True)
+    for directory in [CONF_DIR, PLUGIN_DIR, BLOB_DIR]:
+        if not Path(directory).exists():
+            Path(directory).mkdir(parents=True)
