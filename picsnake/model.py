@@ -4,7 +4,7 @@ import databases
 import ormantic as orm
 import sqlalchemy
 
-__all__ = "UploadedPicture", "StoredPicture"
+__all__ = ("UploadedPicture", )
 
 SHA256_LENGTH = 64
 # TODO 读取配置
@@ -35,5 +35,10 @@ class UploadedPicture(orm.Model):
 
     class Mapping:
         table_name = "upload"
-        metadata = DATABASE
-        database = METADATA
+        metadata = METADATA
+        database = DATABASE
+
+
+# 创建
+engine = sqlalchemy.create_engine(str(DATABASE.url))
+METADATA.create_all(engine)
