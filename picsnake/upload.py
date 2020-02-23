@@ -12,6 +12,7 @@ from .settings import Settings
 from .site import INTERGRATED_BEDS
 from .site.abc import ImageBedSessionABC
 from .util import ReadableImageFile
+from .exception import PicSnakeException
 
 __all__ = ("ImageUploader", )
 
@@ -59,12 +60,20 @@ class ImageUploader:
         try:
             exists: UploadedPicture = await UploadedPicture.objects.get(hash=key)
         except orm.NoMatch:
-            success: UploadedPicture = await UploadedPicture.objects.create(
-                hash=key,
-                bed=self.bedname,
-                accesser=access,
-                deleter=delete,
-                uptime=datetime.now(),
-            )
-
+            if access and delete:
+                await UploadedPicture.objects.create(
+                    hash=key,
+                    bed=self.bedname,
+                    accesser=access,
+                    deleter=delete,
+                    uptime=datetime.now(),
+                )
+            elif access is None:
+                raise PicSnakeException(f"{self.bedname} response: {access!r}, {delete!r}")
+            elif delete is None:
+                await UploadedPicture.objects.create(hash=key,
+                                                     bed=self.bedname,
+                                                     accesser=access,
+                                                     deleter="",
+                                                     uptime=datetime.now())
         return access

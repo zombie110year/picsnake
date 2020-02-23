@@ -14,7 +14,7 @@ from aiohttp import FormData
 
 from ..abc import ReadableImageFileABC
 from .abc import ImageBedSessionABC
-from .exception import ImageHostingError
+from ..exception import ImageHostingError
 
 __all__ = ("ISession", )
 
