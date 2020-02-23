@@ -33,10 +33,7 @@ def unknown_system():
 class Settings:
     """应用程序的“静态”设置，动态设置通过 yaml 读取
     """
-    CONF_DIR: str = {
-        "Windows": windows_appdata,
-        "Linux": linux_config
-    }.get(system(), unknown_system)()
+    CONF_DIR: str = {"Windows": windows_appdata, "Linux": linux_config}.get(system(), unknown_system)()
     PLUGIN_DIR: str = "{}/plugins".format(CONF_DIR)
     BLOB_DIR: str = "{}/bolbs".format(CONF_DIR)
 
