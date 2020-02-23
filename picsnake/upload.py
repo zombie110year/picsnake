@@ -44,7 +44,7 @@ class ImageUploader:
         fileobj = ReadableImageFile(imgpath)
         task_upload = asyncio.create_task(self.bed.upload(fileobj))
         content = await fileobj.read()
-        hex256: str = (await fileobj.sha256()).hexdigest()
+        hex256: str = await fileobj.sha256()
         access, delete = await task_upload
         key = "sha256:{}".format(hex256)
 
@@ -52,7 +52,9 @@ class ImageUploader:
             pic: Picture = await Picture.objects.get(hash=key)
         except orm.NoMatch:
             await Picture.objects.create(hash=key, filename=fileobj.filename, comment="")
-            Path(Path(Settings.BLOB_DIR) / hex256).write_bytes(await fileobj.read())
+            path = Path(Path(Settings.BLOB_DIR) / hex256)
+            if not path.exists():
+                path.write_bytes(await fileobj.read())
 
         try:
             exists: UploadedPicture = await UploadedPicture.objects.get(hash=key)

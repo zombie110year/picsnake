@@ -1,5 +1,4 @@
 import asyncio
-from hashlib import _Hash
 from hashlib import sha256
 from pathlib import PurePath
 from typing import *
@@ -18,19 +17,19 @@ class ReadableImageFile(ReadableImageFileABC):
 
         self.__content: Union[bytes, None] = None
         self.__lock = asyncio.Lock()
-        self.__sha256: Union[_Hash, None] = None
+        self.__sha256: Union[str, None] = None
 
     async def read(self):
         if self.__content is None:
-            with self.__lock:
-                with open_async(self.path, "rb") as instream:
+            async with self.__lock:
+                async with open_async(self.path, "rb") as instream:
                     self.__content = await instream.read()
         return self.__content
 
-    async def sha256(self) -> _Hash:
+    async def sha256(self) -> str:
         if self.__sha256 is None:
             content = await self.read()
-            self.__sha256 = sha256(content)
+            self.__sha256 = sha256(content).hexdigest()
         return self.__sha256
 
 
