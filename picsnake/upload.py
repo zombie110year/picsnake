@@ -36,8 +36,10 @@ class ImageUploader:
         else:
             raise NotImplementedError("暂不支持自定义图床，目前支持的图床有 {}".format([name for name in INTERGRATED_BEDS.keys()]))
 
-    async def upload(self, imgpath: str):
+    async def upload(self, imgpath: str) -> str:
         """如果图片是第一次被管理，那么将其添加到 picture 表中
+
+        当上传成功，返回访问链接
         """
         fileobj = ReadableImageFile(imgpath)
         task_upload = asyncio.create_task(self.bed.upload(fileobj))
@@ -50,6 +52,7 @@ class ImageUploader:
             pic: Picture = await Picture.objects.get(hash=key)
         except orm.NoMatch:
             await Picture.objects.create(hash=key, filename=fileobj.filename, comment="")
+            Path(Path(Settings.BLOB_DIR) / hex256).write_bytes(await fileobj.read())
 
         try:
             exists: UploadedPicture = await UploadedPicture.objects.get(hash=key)
@@ -61,4 +64,5 @@ class ImageUploader:
                 deleter=delete,
                 uptime=datetime.now(),
             )
-            Path(Path(Settings.BLOB_DIR) / hex256).write_bytes(await fileobj.read())
+
+        return access
