@@ -1,4 +1,6 @@
 import asyncio
+from hashlib import _Hash
+from hashlib import sha256
 from pathlib import PurePath
 from typing import *
 
@@ -13,15 +15,23 @@ class ReadableImageFile(ReadableImageFileABC):
     def __init__(self, filepath: str):
         self.path: str = filepath
         self.filename: str = PurePath(filepath).name
-        self.content: Union[bytes, None] = None
-        self.lock = asyncio.Lock()
+
+        self.__content: Union[bytes, None] = None
+        self.__lock = asyncio.Lock()
+        self.__sha256: Union[_Hash, None] = None
 
     async def read(self):
-        if self.content is None:
-            with self.lock:
+        if self.__content is None:
+            with self.__lock:
                 with open_async(self.path, "rb") as instream:
-                    self.content = await instream.read()
-        return self.content
+                    self.__content = await instream.read()
+        return self.__content
+
+    async def sha256(self) -> _Hash:
+        if self.__sha256 is None:
+            content = await self.read()
+            self.__sha256 = sha256(content)
+        return self.__sha256
 
 
 def const_expr(func):
@@ -46,8 +56,7 @@ def const_expr(func):
 T = TypeVar("T")
 
 
-def split_large_list(seq: List[T],
-                     limit: int = 10) -> Generator[List[T], None, None]:
+def split_large_list(seq: List[T], limit: int = 10) -> Generator[List[T], None, None]:
     """（生成器）将过长的列表拆分成最大 limit 长度的小段
     """
     length = len(seq)
