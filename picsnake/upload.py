@@ -46,7 +46,7 @@ class ImageUploader:
         content = await fileobj.read()
         hex256: str = await fileobj.sha256()
         access, delete = await task_upload
-        key = "sha256:{}".format(hex256)
+        key = hex256
 
         try:
             pic: Picture = await Picture.objects.get(hash=key)
