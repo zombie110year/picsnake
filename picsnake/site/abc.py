@@ -1,6 +1,6 @@
 from abc import ABCMeta
 from abc import abstractmethod
-from typing import Tuple
+from typing import *
 
 from ..abc import ReadableImageFileABC
 

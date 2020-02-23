@@ -14,6 +14,7 @@ from aiohttp import FormData
 
 from ..abc import ReadableImageFileABC
 from .abc import ImageBedSessionABC
+from .exception import ImageHostingError
 
 __all__ = ("ISession", )
 
@@ -87,6 +88,8 @@ class ISession(ImageBedSessionABC):
         if not return_data["success"]:
             if return_data["code"] == "image_repeated":
                 return return_data["images"], None
+            else:
+                raise ImageHostingError(return_data)
         return return_data["data"]["url"], return_data["data"]["delete"]
 
     def _api(self, name: str) -> str:
