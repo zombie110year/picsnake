@@ -14,7 +14,7 @@ class ImageBedSessionABC(metaclass=ABCMeta):
     - delete
     """
     @abstractmethod
-    async def upload(self, fileobj: ReadableImageFileABC) -> Tuple[str, str]:
+    async def upload(self, fileobj: ReadableImageFileABC) -> Tuple[Union[str, None], Union[str, None]]:
         "上传，并返回（访问链接，删除链接）"
         raise NotImplementedError
 
