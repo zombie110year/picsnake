@@ -13,20 +13,18 @@ SHA256_LENGTH = 64
 DATABASE = databases.Database("sqlite:///{}".format(Settings.DATABASE))
 METADATA = sqlalchemy.MetaData()
 
-Sha256Hex: orm.String = orm.String(primary_key=True,
-                                   index=True,
-                                   max_length=SHA256_LENGTH)
+Sha256Hex: orm.String = orm.String(primary_key=True, index=True, max_length=SHA256_LENGTH)
 BedName: orm.String = orm.String(primary_key=True, max_length=127)
 ShortName: orm.String = orm.String(max_length=127)
 Url: orm.String = orm.String(max_length=0xffffffff)
 DateTime: orm.DateTime = orm.DateTime()
+CommentText: orm.String = orm.String(max_length=1023)
 
 
 class UploadedPicture(orm.Model):
     """被上传的图片，记录字段
 
     - hash（HEX）：str
-    - filename（文件名）：str
     - bed（图床的别名、用来对应解析规则）：str
     - accesser（如何访问图片）：str
     - deleter（如何删除图片）：str
@@ -36,7 +34,6 @@ class UploadedPicture(orm.Model):
     """
     hash: Sha256Hex
     bed: BedName
-    filename: ShortName
     accesser: Url
     deleter: Url
     uptime: DateTime
@@ -45,6 +42,23 @@ class UploadedPicture(orm.Model):
         table_name = "upload"
         metadata = METADATA
         database = DATABASE
+
+
+class Picture(orm.Model):
+    """一张图片
+
+    - hash（HEX）：str
+    - filename（文件名）：str
+    - comment（注释）：str
+    """
+    hash: Sha256Hex
+    filename: ShortName
+    comment: CommentText
+
+    class Mapping:
+        table_name = "picture"
+        metadata = METADATA
+        databases = DATABASE
 
 
 # 创建
