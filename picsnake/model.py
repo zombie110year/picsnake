@@ -58,7 +58,7 @@ class Picture(orm.Model):
     class Mapping:
         table_name = "picture"
         metadata = METADATA
-        databases = DATABASE
+        database = DATABASE
 
 
 # 创建
