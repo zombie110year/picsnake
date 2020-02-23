@@ -16,5 +16,11 @@
         "--show-column-numbers"
     ],
     "python.linting.enabled": true,
-    "python.formatting.provider": "yapf"
+    "python.formatting.provider": "yapf",
+    "todo-tree.general.tags": [
+        "BUG",
+        "FIXME",
+        "TODO",
+        "todo"
+    ]
 }
