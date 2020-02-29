@@ -1,4 +1,4 @@
-"""与数据库交互的逻辑
+"""数据模型
 """
 
 from hashlib import sha256
@@ -9,7 +9,7 @@ import sqlalchemy
 
 from .settings import Settings
 
-__all__ = ("UploadedPicture", "Picture")
+__all__ = ("UploadedPicture", "Picture", "DATABASE", "METADATA")
 
 SHA256_LENGTH = 64
 
@@ -62,8 +62,3 @@ class Picture(orm.Model):
         table_name = "picture"
         metadata = METADATA
         database = DATABASE
-
-
-# 创建
-engine = sqlalchemy.create_engine(str(DATABASE.url))
-METADATA.create_all(engine)
