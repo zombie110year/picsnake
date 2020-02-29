@@ -1,3 +1,6 @@
+"""Core 包通用工具
+"""
+
 import asyncio
 from hashlib import sha256
 from pathlib import PurePath
@@ -38,6 +41,10 @@ def const_expr(func):
 
     1. 整个程序的生命周期内只会执行一次
     2. 保存第一次运行的返回值
+
+    >>> @const_expr
+    >>> def one():
+    >>>     return 1
     """
     result = None
 

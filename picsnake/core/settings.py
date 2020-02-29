@@ -1,8 +1,11 @@
+"""内建设置
+"""
+
 from os import getenv
 from pathlib import Path
 from platform import system
 
-from . import __app_name__
+from .. import __app_name__
 
 __all__ = ("Settings", )
 

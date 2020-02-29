@@ -1,3 +1,6 @@
+"""与数据库交互的逻辑
+"""
+
 from hashlib import sha256
 
 import databases
@@ -6,7 +9,7 @@ import sqlalchemy
 
 from .settings import Settings
 
-__all__ = ("UploadedPicture", )
+__all__ = ("UploadedPicture", "Picture")
 
 SHA256_LENGTH = 64
 
