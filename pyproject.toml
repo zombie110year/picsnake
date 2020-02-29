@@ -5,9 +5,10 @@ description = ""
 authors = ["zombie110year <zombie110year@outlook.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.8"
 aiohttp = "^3.6.2"
-ormantic = "^0.0.29"
+# 开发中！
+orm = "~0.1.0"
 aiosqlite = "^0.11.0"
 databases = "^0.2.6"
 aiodns = "^2.0.0"
