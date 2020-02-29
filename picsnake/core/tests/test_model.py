@@ -22,10 +22,13 @@ def db_test():
 
 @pytest.mark.asyncio
 async def test_add_picture(db_test):
-    a = Picture(sha256="e3b0c44298fc1c149afbf4c8996fb92427ae41e3649b934ca495991b7852b855", filename="heihei.png", comment="无注释")
+    a = Picture(sha256="e3b0c44298fc1c149afbf4c8996fb92427ae41e3649b934ca495991b7852b855",
+                filename="heihei.png",
+                comment="无注释")
     await a.insert()
     pictures = await Picture.objects.filter(sha256__icontains="e3b0c4").all()
     assert a in pictures
+
 
 @pytest.mark.asyncio
 async def test_add_upload_picture(db_test):
