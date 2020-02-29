@@ -46,3 +46,14 @@ class Settings:
     for directory in [CONF_DIR, PLUGIN_DIR, BLOB_DIR]:
         if not Path(directory).exists():
             Path(directory).mkdir(parents=True)
+
+
+class TestingSettings:
+    "测试环境下的设置"
+    CONF_DIR = "./ignore/conf"
+    PLUGIN_DIR = f"{CONF_DIR}/plugins"
+    BLOB_DIR = f"{CONF_DIR}/blobs"
+    DATABASE = f"{CONF_DIR}/db.sqlite"
+    for directory in [CONF_DIR, PLUGIN_DIR, BLOB_DIR]:
+        if not Path(directory).exists():
+            Path(directory).mkdir(parents=True)
