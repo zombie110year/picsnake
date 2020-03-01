@@ -4,14 +4,14 @@ import asyncio
 from datetime import datetime
 from pathlib import Path
 
-import ormantic as orm
+import orm
 
-from .model import Picture
-from .model import UploadedPicture
-from .settings import Settings
+from .core.model import Picture
+from .core.model import UploadedPicture
+from .core.settings import Settings
+from .core.util import ReadableImageFile
 from .site import INTERGRATED_BEDS
 from .site.abc import ImageBedSessionABC
-from .util import ReadableImageFile
 from .exception import PicSnakeException
 
 __all__ = ("ImageUploader", )
@@ -49,20 +49,21 @@ class ImageUploader:
         access, delete = await task_upload
         key = hex256
 
+        pic = Picture(sha256=key, filename=fileobj.filename, comment="")
         try:
-            pic: Picture = await Picture.objects.get(hash=key)
+            await pic.objects.exists()
         except orm.NoMatch:
-            await Picture.objects.create(hash=key, filename=fileobj.filename, comment="")
+            await pic.update()
             path = Path(Path(Settings.BLOB_DIR) / hex256)
             if not path.exists():
                 path.write_bytes(await fileobj.read())
 
         try:
-            exists: UploadedPicture = await UploadedPicture.objects.get(hash=key)
+            exists: UploadedPicture = await UploadedPicture.objects.get(sha256=key)
         except orm.NoMatch:
             if access and delete:
                 await UploadedPicture.objects.create(
-                    hash=key,
+                    sha256=key,
                     bed=self.bedname,
                     accesser=access,
                     deleter=delete,
@@ -71,7 +72,7 @@ class ImageUploader:
             elif access is None:
                 raise PicSnakeException(f"{self.bedname} response: {access!r}, {delete!r}")
             elif delete is None:
-                await UploadedPicture.objects.create(hash=key,
+                await UploadedPicture.objects.create(sha256=key,
                                                      bed=self.bedname,
                                                      accesser=access,
                                                      deleter="",
